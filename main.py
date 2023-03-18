@@ -1,4 +1,4 @@
-import discord, os, asyncio, colorama,json, traceback, re
+import discord, os, asyncio, colorama,json, traceback, re, random
 from discord.ext import commands
 from discord import app_commands
 from colorama import Fore
@@ -19,12 +19,7 @@ class ChangeViewModal(discord.ui.Modal, title='Change Welcome Configuration'):
         label='Delay:',
         placeholder='Amount of time to wait before sending a welcome DM',
         required = True,
-    )
-
-
-    
-
-  
+    )  
     message = discord.ui.TextInput(
         label='Message To Send:',
         style=discord.TextStyle.short,
@@ -44,7 +39,7 @@ class ChangeViewModal(discord.ui.Modal, title='Change Welcome Configuration'):
             fek.write(f"{self.message.value}:{delay_int}")
           ChangedViewModalVer = discord.Embed(
             title = "Success",
-            description = f"The join configuration has successfully been updated.\n```yaml\nGuild ID: {interaction.guild.id}\nMessage: {self.message.value}\nDelay: {self.delay.value} seconds.\n```",
+            description = f"T=he join configuration has successfully been updated.\n```yaml\nGuild ID: {interaction.guild.id}\nMessage: {self.message.value}\nDelay: {self.delay.value} seconds.\n```",
             color = 0x32CD32
           )
           await interaction.response.send_message(embed=ChangedViewModalVer)
@@ -125,6 +120,27 @@ async def on_ready():
           Command Prefix: {client.command_prefix}
           Slash Synced: {Fore.LIGHTGREEN_EX}TRUE{Fore.RESET}
   """)
+
+@client.tree.command(name = "serverinfo", description = "view the information of this current guild.")
+async def serverinfo(interaction: discord.Interaction):
+  guild = interaction.guild
+  guild_name = guild.name
+  guild_id = guild.id
+  guild_owner = guild.owner_id 
+  guild_server_pfp = guild.icon.url 
+  guild_member_count = guild.member_count
+  total_text_channels = len(guild.text_channels)
+  total_voice_channels = len(guild.voice_channels)
+  colors = random.randint(0, 0xffffff)
+  server_info_embed = discord.Embed(
+    title = f"{guild.name} | Server Information:",
+    description = f"Guild Name: **{guild_name}**\nGuild ID: **{guild_id}**\nGuild Owner: <@{guild_owner}>\nMembercount: **{guild_member_count}**\nText channels: **{total_text_channels}**\nVoice channels: **{total_voice_channels}**",
+    color = colors
+  )
+  server_info_embed.set_thumbnail(url=guild_server_pfp)
+  await interaction.response.send_message(embed=server_info_embed)
+
+
 
 @app_commands.checks.has_permissions(moderate_members=True)
 @app_commands.guild_only()
@@ -259,5 +275,5 @@ async def view(interaction: discord.Interaction):
 """
 
 
-  
-client.run("MTA3NTQ5ODE4NzgzOTc4MjkzMg.GF6LVe.rJYOWlxn9JwuKhUhIhcz7yNqNGfRuLheOgSRCU")
+if __name__ == '__main__':
+  client.run("")
